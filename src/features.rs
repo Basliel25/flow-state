@@ -53,12 +53,12 @@ fn parse_row(row: &str) -> Option<ParsedRow> {
     let fields: Vec<&str> = row.split('\t').collect();
 
     Some(ParsedRow{
-        proto_idx: lookup(&PROTOS, fields.get(7)?),
-        service_idx: lookup(&SERVICES, fields.get(8)?),
-        conn_state_idx: lookup(&CONN_STATE, fields.get(12)?),
-        duration: parse_continous(fields.get(9)?),
-        orig_bytes: parse_continous(fields.get(10)?),
-        resp_bytes: parse_continous(fields.get(11)?),
+        proto_idx: lookup(&PROTOS, fields.get(6)?),
+        service_idx: lookup(&SERVICES, fields.get(7)?),
+        conn_state_idx: lookup(&CONN_STATE, fields.get(11)?),
+        duration: parse_continous(fields.get(8)?),
+        orig_bytes: parse_continous(fields.get(9)?),
+        resp_bytes: parse_continous(fields.get(10)?),
     })
 }
 
