@@ -11,7 +11,19 @@
 
 use ndarray::Array1;
 
-pub const FEATURE_DIM: usize = 25;
+pub const FEATURE_DIM: usize = 41;
+
+const PROTOS: &[&str] = &[
+    "tcp", "udp", "icmp", "unknown_transport",
+];
+
+const SERVICES: &[&str] = &["-", "dce_rpc", "dhcp", "dns", "enum", "ftp", "ftp-data",
+"geneve", "gssapi", "gssapi,ntlm,smb", "gssapi,ntlm,smb,dce_rpc",
+"gssapi,smb", "http", "imap", "irc", "ldap_tcp", "modbus",
+"ntlm", "ntlm,smb,dce_rpc", "pop3", "radius", "smb",
+"smtp", "ssh", "ssl", "syslog",];
+
+const CONN_STATE: &[&str] = &["OTH", "RSTO", "S0", "S1", "S3", "SF",];
 
 #[derive(Clone, Debug)]
 pub struct FlowFeatures {
