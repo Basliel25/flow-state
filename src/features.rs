@@ -41,7 +41,10 @@ pub struct FlowFeatures {
 }
 
 impl FlowFeatures {
-    pub fn from_tsv_row(row: &str)->Option<Self> {todo!()}
+    pub fn from_tsv_row(row: &str)->Option<Self> {
+        let parsed = parse_row(row)?;
+        Some(FlowFeatures {vector: to_vector(&parsed)})
+    }
 }
 
 fn parse_row(row: &str) -> Option<ParsedRow> {
