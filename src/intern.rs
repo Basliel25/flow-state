@@ -1,7 +1,7 @@
 ///! Flow key: The intern table - Maps flowkey state - u64
 ///! Data held in an IndexMap 
 
-use indexMap::IndexMap;
+use indexmap::IndexMap;
 use crate::key::FlowKey;
 
 #[derive(Debug, Default)]
