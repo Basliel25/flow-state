@@ -21,5 +21,10 @@ impl FlowState {
         idx as u64
     }
 
+    /// Resolve function for fetching from table
+    pub fn resolve(&self, id: u64) -> Option<FlowKey> {
+        self.table.get_index(id as usize).map(|k, _| k.clone())
+    }
+
 
 }
