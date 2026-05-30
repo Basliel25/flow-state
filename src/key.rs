@@ -4,7 +4,7 @@ use std::fs;
 ///! file.
 ///
 ///! Packages (proto, sevice, conn_state) as a state
-#[derive(Debug, Default, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, Hash, PartialEq)]
 pub struct FlowKey {
     // Potential borrow check problem with String
     // But the states should outlive the conn.log line
