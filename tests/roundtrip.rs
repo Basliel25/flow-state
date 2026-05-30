@@ -22,3 +22,15 @@ fn intern_then_resolve_reutrns_same_key () {
 
     assert_eq!(*resolved, key);
 }
+
+#[test]
+fn intern_same_key_twice_returns_same_id () {
+    let mut state = FlowState::new();
+    let key = make_key("tcp", "http", "SF");
+
+    let id_1 = state.intern(key.clone());
+    let id_2 = state.intern(key);
+
+    assert_eq!(id_1, id_2);
+    assert_eq!(state.len(), 1);
+}
