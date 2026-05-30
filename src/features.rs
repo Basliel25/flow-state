@@ -68,3 +68,17 @@ fn parse_continous(s: &str) -> f64 {
     if s == "-" {f64::NAN} 
     else {s.parse().unwrap_or(f64::NAN)}
 }
+
+fn to_vector(parsed: &ParsedRow) -> Array1<f64> {
+    let mut feature_vector = Array1::zeros(FEATURE_DIM);
+
+    feature_vector[0] = parsed.duration;
+    feature_vector[1] = parsed.orig_bytes;
+    feature_vector[2] = parsed.resp_bytes;
+
+    feature_vector[3 + parsed.proto_idx] = 1.0;          
+    feature_vector[8 + parsed.service_idx] = 1.0;        
+    feature_vector[34 + parsed.conn_state_idx] = 1.0;    
+
+    feature_vector
+}
