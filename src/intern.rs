@@ -26,5 +26,6 @@ impl FlowState {
         self.table.get_index(id as usize).map(|k, _| k.clone())
     }
 
-
+    pub fn len(&self) -> usize {self.table.len()}
+    pub fn is_empty(&self) -> bool {self.table.is_empty()}
 }
