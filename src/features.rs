@@ -53,9 +53,9 @@ fn parse_row(row: &str) -> Option<ParsedRow> {
         proto_idx: lookup(&PROTOS, fields.get(7)?),
         service_idx: lookup(&SERVICES, fields.get(8)?),
         conn_state_idx: lookup(&CONN_STATE, fields.get(12)?),
-        duration: parse_cont?
-        
-
+        duration: parse_continous(fields.get(9)?),
+        orig_bytes: parse_continous(fields.get(10)?),
+        resp_bytes: parse_continous(fields.get(11)?),
     })
 }
 
