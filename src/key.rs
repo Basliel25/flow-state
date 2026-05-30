@@ -1,14 +1,12 @@
+use std::collections::HashMap;
+use std::fs;
 ///! FlowKey: the catagorical projection of a zeek conn.log
 ///! file.
 ///
 ///! Packages (proto, sevice, conn_state) as a state
-
-use std::collections::HashMap;
-use std::fs;
-
-// Potential borrow check problem with String
-// But the states should outlive the conn.log line
 pub struct FlowKey {
+    // Potential borrow check problem with String
+    // But the states should outlive the conn.log line
     pub proto: String,
     pub service: String,
     pub conn_state: String,
@@ -34,11 +32,6 @@ mod tests {
 
     #[test]
     fn parse_sample_tsv_sanity() {
-        // Parse valid rows
-        // columns 1..=12, with
-        // proto@7
-        // service@8
-        // conn_state@12
         let content = fs::read_to_string("tests/fixtures/sample_conn_log.tsv").expect("fixture missing");
 
         let keys: Vec<FlowKey> = content
@@ -46,8 +39,6 @@ mod tests {
             .filter_map(FlowKey::from_tsv_row)
             .collect();
 
-        eprintln!("content length: {}", content.len());
-        eprintln!("first 200 bytes: {:?}", &content[..content.len().min(200)]);
         assert!(keys.is_empty(), "no rows");
 
         // Simple sanity check to see if proto is parsed 
@@ -59,6 +50,30 @@ mod tests {
         }
     }
 
+    #[test]
+    fn parses_valid_row() {
+        // Parse valid rows
+        // columns 1..=12, with
+        // proto@7
+        // service@8
+        // conn_state@12
+        let row = "ts\tuid\torig_h\torig_p\tresp_h\tresp_p\tlocal\ttcp\thttp\t1.5\t100\t200\tSF";
+        let key = FlowKey::from_tsv_row(row).unwrap();
+        assert_eq!(key.proto, "tcp");
+        assert_eq!(key.service, "http");
+        assert_eq!(key.conn_state, "SF");
+    }
+
+    #[test]
+    fn rejects_header_lines() {
+        assert!(FlowKey::from_tsv_row("#separator \\x09").is_none());
+        assert!(FlowKey::from_tsv_row("#fields\tts\tuid").is_none());
+    }
+
+    #[test]
+    fn rejects_short_rows() {
+        assert!(FlowKey::from_tsv_row("ts\tuid\tonly\tthree").is_none());
+    }
 }
 
 
