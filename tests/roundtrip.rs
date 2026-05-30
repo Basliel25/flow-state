@@ -51,3 +51,21 @@ fn intern_on_distinct_key_distinct_id() {
     assert_ne!(id_3, id_1);
     assert_eq!(state.len(), 3);
 }
+
+#[test]
+fn ids_are_sequential() {
+    // Since markov-rs depends on sequential states
+    // ids should be dense and sequential
+    let mut state = FlowState::new();
+    let key_1 = make_key("tcp", "http", "SF");
+    let key_2 = make_key("udp", "https", "S0");
+    let key_3 = make_key("udp", "ssl", "S0");
+
+    let id_1 = state.intern(key_1.clone());
+    let id_2 = state.intern(key_2.clone());
+    let id_3 = state.intern(key_3.clone());
+
+    assert_eq!(id_1, 0);
+    assert_eq!(id_2, 1);
+    assert_eq!(id_3, 2);
+}
