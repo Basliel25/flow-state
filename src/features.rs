@@ -25,6 +25,14 @@ const SERVICES: &[&str] = &["-", "dce_rpc", "dhcp", "dns", "enum", "ftp", "ftp-d
 
 const CONN_STATE: &[&str] = &["OTH", "RSTO", "S0", "S1", "S3", "SF",];
 
+struct ParsedRow {
+    proto_idx: usize,       // 0..=4 
+    service_idx: usize,     // 0..=26 
+    conn_state_idx: usize,  // 0..=6 
+    duration: f64,  // NaN if missing
+    orig_bytes: f64, // NaN if missing
+    resp_bytes: f64, // NaN if missing
+}
 #[derive(Clone, Debug)]
 pub struct FlowFeatures {
     pub vector: Array1<f64>,
