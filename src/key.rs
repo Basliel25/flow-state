@@ -13,7 +13,19 @@ pub struct FlowKey {
     pub conn_state: String,
 }
 
+impl FlowKey {
+    pub fn from_tsv_row(row: &str) -> Option<Self> {
+        if(row.starts_with("#")) {return None;}
 
+        let fields: Vec<&str> = row.split("\t").collect();
+
+        Some(FlowKey{
+            proto: fields.get(7)?.to_string(),
+            service: fields.get(8)?.to_string(),
+            conn_state: fields.get(12)?.to_string(),
+        })
+    }
+}
 
 
 
