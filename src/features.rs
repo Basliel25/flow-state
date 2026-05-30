@@ -1,3 +1,5 @@
+use std::num::FpCategory::Nan;
+
 ///! Extract features form zeek conn.log line
 ///! and returns a pure high-dimensonla feauture vector 
 ///! draft vector Dimensions:
@@ -51,6 +53,7 @@ fn parse_row(row: &str) -> Option<ParsedRow> {
         proto_idx: lookup(&PROTOS, fields.get(7)?),
         service_idx: lookup(&SERVICES, fields.get(8)?),
         conn_state_idx: lookup(&CONN_STATE, fields.get(12)?),
+        duration: parse_cont?
         
 
     })
@@ -58,4 +61,10 @@ fn parse_row(row: &str) -> Option<ParsedRow> {
 
 fn lookup(vocab: &[&str], value: &str) -> usize {
     vocab.iter().position(|&v| v == value).unwrap_or(vocab.len())
+}
+
+/// Parse contionus data sets as array is Array1<f64>
+fn parse_continous(s: &str) -> f64 {
+    if s == "-" {f64::NAN} 
+    else {s.parse().unwrap_or(f64::NAN)}
 }
