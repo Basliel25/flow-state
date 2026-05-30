@@ -20,5 +20,5 @@ fn intern_then_resolve_reutrns_same_key () {
     let id = state.intern(key.clone());
     let resolved = state.resolve(id).expect("id didnt resolve");
 
-    assert_eq!(resolved, key);
+    assert_eq!(*resolved, key);
 }
