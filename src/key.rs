@@ -74,6 +74,15 @@ mod tests {
     fn rejects_short_rows() {
         assert!(FlowKey::from_tsv_row("ts\tuid\tonly\tthree").is_none());
     }
+
+    #[test]
+    fn preserves_zeek_dash() {
+        // Zeek writes '-' to mark empty placeholders
+        let row = "ts\tuid\torig_h\torig_p\tresp_h\tresp_p\tlocal\ttcp\t-\t1.5\t100\t200\tS0";
+        let key = FlowKey::from_tsv_row(row).unwrap();
+        assert_eq!(key.service, "-");
+        assert_eq!(key.conn_state, "S0");
+    }
 }
 
 
