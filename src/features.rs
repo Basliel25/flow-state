@@ -39,5 +39,23 @@ pub struct FlowFeatures {
 }
 
 impl FlowFeatures {
-    pub fn from_tsv_row(row: &str)->Option<self> {todo!()}
+    pub fn from_tsv_row(row: &str)->Option<Self> {todo!()}
+}
+
+fn parse_row(row: &str) -> Option<ParsedRow> {
+    if row.starts_with('#') {return None}
+
+    let fields: Vec<&str> = row.split('\t').collect();
+
+    Some(ParsedRow{
+        proto_idx: lookup(&PROTOS, fields.get(7)?),
+        service_idx: lookup(&SERVICES, fields.get(8)?),
+        conn_state_idx: lookup(&CONN_STATE, fields.get(12)?),
+        
+
+    })
+}
+
+fn lookup(vocab: &[&str], value: &str) -> usize {
+    vocab.iter().position(|&v| v == value).unwrap_or(vocab.len())
 }
