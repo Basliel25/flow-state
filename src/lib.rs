@@ -1,2 +1,7 @@
-pub mod intern;
-pub mod key;
+mod intern;
+mod key;
+
+use crate::key::Key;
+use crate::intern::Key;
+
+
