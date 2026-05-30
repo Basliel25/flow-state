@@ -13,7 +13,7 @@ fn make_key(proto: &str, service: &str, conn_state: &str) -> FlowKey {
 }
 
 #[test]
-fn intern_then_resolve_reutrns_same_key () {
+fn intern_then_resolve_reutrns_same_key() {
     let mut state = FlowState::new();
     let key = make_key("tcp", "http", "SF");
 
@@ -24,7 +24,7 @@ fn intern_then_resolve_reutrns_same_key () {
 }
 
 #[test]
-fn intern_same_key_twice_returns_same_id () {
+fn intern_same_key_twice_returns_same_id() {
     let mut state = FlowState::new();
     let key = make_key("tcp", "http", "SF");
 
@@ -33,4 +33,21 @@ fn intern_same_key_twice_returns_same_id () {
 
     assert_eq!(id_1, id_2);
     assert_eq!(state.len(), 1);
+}
+
+#[test]
+fn intern_on_distinct_key_distinct_id() {
+    let mut state = FlowState::new();
+    let key_1 = make_key("tcp", "http", "SF");
+    let key_2 = make_key("udp", "https", "S0");
+    let key_3 = make_key("udp", "ssl", "S0");
+
+    let id_1 = state.intern(key_1.clone());
+    let id_2 = state.intern(key_2.clone());
+    let id_3 = state.intern(key_3.clone());
+
+    assert_ne!(id_1, id_2);
+    assert_ne!(id_3, id_2);
+    assert_ne!(id_3, id_1);
+    assert_eq!(state.len(), 3);
 }
