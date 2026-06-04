@@ -73,6 +73,7 @@ dependencies = [
  "indexmap",
  "linfa",
  "linfa-clustering",
+ "linfa-nn",
  "ndarray 0.17.2",
 ]
 
