@@ -4,14 +4,15 @@
 ///
 ///! Outputs a u64 vecor with dim (0,K]
 
+use crate::features::FEATURE_DIM;
 use ndarray::{Array1, Array2};
-use linfa::DatasetBase;
+use linfa::{Dataset, DatasetBase};
 use linfa::traits::{Fit, Predict};
 use linfa_clustering::KMeans;
 use linfa_nn::distance::L2Dist;
 
-use rand::SeedableRng;
-use rand::rngs::StdRng;
+use rand_xoshiro::Xoshiro256Plus;
+use rand_xoshiro::rand_core::SeedableRng;
 
 #[derive(Debug, Clone)]
 pub struct ClusterModel {
@@ -38,9 +39,21 @@ impl ClusterModel {
             .flat_map(|row| row.iter().copied())
             .collect();
 
+        let data = Array2::from_shape_vec((n, FEATURE_DIM), flat)
+            .expect("Shape mismatch");
 
+        // DatasetBase is used to wrap inputs for linfa
+        let dataset = DatasetBase::from(data);
 
-        todo!()
+        // Seeded rng so the clustering is reproducible
+        let rng = Xoshiro256Plus::seed_from_u64(42);
+        
+        // Construct fitted clusters
+        let fitted: KMeans<f64, _> = KMeans::params_with_rng(k, rng)
+            .fit(&dataset)
+            .expect("K Means fit failed");
+
+        ClusterModel {k, inner: fitted}
     }
 
     /// Assign a single scaled vector to its nearest centriod
