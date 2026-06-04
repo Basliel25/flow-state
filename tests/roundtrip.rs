@@ -9,10 +9,14 @@ fn row(proto: &str, service: &str, dur: &str, ob: &str, rb: &str, cs: &str) -> S
     format!("1.0\tCxxxx\t1.2.3.4\t1111\t5.6.7.8\t80\t{proto}\t{service}\t{dur}\t{ob}\t{rb}\t{cs}")
 }
 
-#[test]
+fn synthetic_batch() -> Vec<FlowFeatures> {}
 
 #[test]
+fn fit_then_predict_reutrns_id_in_range() {}
 
 #[test]
+fn reslove_returns_41_dim_centroid() {}
 
 #[test]
+fn same_flow_predicts_same_cluster() {}
+
