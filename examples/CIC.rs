@@ -7,7 +7,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::process;
 
-use flow_state::{FlowFeatures, FlowStateBuilder};
+use conn_flow_state::{FlowFeatures, FlowStateBuilder};
 
 const k: usize = 20;
 

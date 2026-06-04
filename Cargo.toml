@@ -1,5 +1,5 @@
 [package]
-name = "flow-state"
+name = "conn-flow-state"
 version = "0.2.0"
 edition = "2024"
 description = "A fitting and predicting module to expose conn.log features as cluster of behaviour for markov chain transition prediction"

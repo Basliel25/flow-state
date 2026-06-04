@@ -24,6 +24,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
 
 [[package]]
+name = "conn-flow-state"
+version = "0.2.0"
+dependencies = [
+ "indexmap",
+ "linfa",
+ "linfa-clustering",
+ "linfa-nn",
+ "ndarray",
+ "rand_xoshiro",
+]
+
+[[package]]
 name = "crossbeam-deque"
 version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -65,18 +77,6 @@ name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
-
-[[package]]
-name = "flow-state"
-version = "0.2.0"
-dependencies = [
- "indexmap",
- "linfa",
- "linfa-clustering",
- "linfa-nn",
- "ndarray",
- "rand_xoshiro",
-]
 
 [[package]]
 name = "getrandom"

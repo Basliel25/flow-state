@@ -38,5 +38,21 @@ for flow in &batch {
 // Inspect a cluster centroid (in scaled feature space).
 let centroid = state.resolve(0);
 ```
+## Feature vector layout (42-dim)
 
-## Pipeline
+| Dims    | Meaning                                            |
+|---------|----------------------------------------------------|
+| 0..3    | `duration`, `orig_bytes`, `resp_bytes` (raw, NaN if missing) |
+| 3..8    | `proto` one-hot (tcp, udp, icmp, unknown_transport, *other*) |
+| 8..35   | `service` one-hot (26 Zeek service strings + *other*) |
+| 35..42  | `conn_state` one-hot (OTH, RSTO, S0, S1, S3, SF, *other*) |
+
+Continuous fields are `log1p`-transformed and z-scored using means/stds fitted on the training batch; missing values are imputed to the fitted mean (0.0 in scaled space). One-hot dimensions pass through unchanged.
+
+## Status
+
+`v0.2` — clustering-based state abstraction over conn.log. API not yet stable; expect breaking changes in `0.x` minor releases (per Cargo semver convention).
+
+## License
+
+MIT
