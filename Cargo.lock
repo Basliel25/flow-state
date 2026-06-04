@@ -74,6 +74,7 @@ dependencies = [
  "linfa",
  "linfa-clustering",
  "linfa-nn",
+ "ndarray",
  "rand_xoshiro",
 ]
 

@@ -5,7 +5,7 @@
 ///! Outputs a u64 vecor with dim (0,K]
 
 use crate::features::FEATURE_DIM;
-use ndarray::{Array1, Array2};
+use ndarray::{Array1, Array2, Axis};
 use linfa::{Dataset, DatasetBase};
 use linfa::traits::{Fit, Predict};
 use linfa_clustering::KMeans;
@@ -58,7 +58,14 @@ impl ClusterModel {
 
     /// Assign a single scaled vector to its nearest centriod
     /// Reutrns the index of the cluster in (0,k]
-    pub fn predict(&self, vector: &[Array1<f64>]) -> u64 {todo!()}
+    pub fn predict(&self, vector: &Array1<f64>) -> u64 {
+        // Real chalenge here linfa wants 2darray
+        let as_matrix = vector.view().insert_axis(Axis(0)).to_owned();
+
+        let preds = self.inner.predict(&as_matrix);
+
+        preds[0] as u64
+    }
 
     /// The resolve module, fetches a cluster and returns a human
     /// readable state explanation.
