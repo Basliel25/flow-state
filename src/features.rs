@@ -103,4 +103,23 @@ mod tests {
         , cs: &str) -> String {
         format!("1.0\tCxxxx\t1.2.3.4\t1111\t5.6.7.8\t80\t{proto}\t{service}\t{dur}\t{ob}\t{rb}\t{cs}")
     }
+
+    #[test]
+    fn vector_has_41_dim() {
+        let f = FlowFeatures::from_tsv_row(&row("tcp", "http", "0.5", "100", "200", "SF")).unwrap();
+        assert_eq!(f.vector.len(), 41);
+    }
+
+    #[test]
+    fn continous_raw_and_missing_is_NaN() {
+        let f = FlowFeatures::from_tsv_row(&row("tcp", "http", "0.5", "100", "200", "SF")).unwrap();
+
+        assert_eq!(f.vector[0], 0.5);
+        assert_eq!(f.vector[1], 100.0);
+        assert_eq!(f.vector[2], 200.0);
+
+        let g = FlowFeatures::from_tsv_row(&row("tcp", "http", "-", "-", "-", "SF")).unwrap();
+        let v = g.vector.as_slice().unwrap();
+        assert!(v[CONT].iter().all(|x| x.is_nan()));
+    }
 }
