@@ -1,71 +1,72 @@
-///! complete API integration test
-///! Test flowstate pipe from intern <--> resolve
+///! Integration test for full fit/predict contract
 
-use flow_state::{FlowState, FlowKey};
+use flow_state::{FlowFeatures, FlowStateBuilder, FEATURE_DIM};
 
-/// Create a key from the values
-fn make_key(proto: &str, service: &str, conn_state: &str) -> FlowKey {
-    FlowKey {
-        proto: proto.to_string(),
-        service: service.to_string(),
-        conn_state: conn_state.to_string(),
+/// Build a synthetic conn.log TSV row 
+///   0 ts | 1 uid | 2 orig_h | 3 orig_p | 4 resp_h | 5 resp_p
+///   6 proto | 7 service | 8 duration | 9 orig_bytes | 10 resp_bytes | 11 conn_state
+fn row(proto: &str, service: &str, dur: &str, ob: &str, rb: &str, cs: &str) -> String {
+    format!("1.0\tCxxxx\t1.2.3.4\t1111\t5.6.7.8\t80\t{proto}\t{service}\t{dur}\t{ob}\t{rb}\t{cs}")
+}
+
+fn synthetic_batch() -> Vec<FlowFeatures> {
+    let rows = [
+        // short tcp and http combo
+        ("tcp", "http", "0.1",  "100",   "200",   "SF"),
+        ("tcp", "http", "0.15", "120",   "180",   "SF"),
+        ("tcp", "http", "0.08", "90",    "210",   "SF"),
+        // long tcp and ssl combo
+        ("tcp", "ssl",  "30.0", "50000", "80000", "SF"),
+        ("tcp", "ssl",  "45.0", "60000", "90000", "SF"),
+        ("tcp", "ssl",  "28.0", "48000", "85000", "SF"),
+        // udp and dns with intential missing entries
+        ("udp", "dns",  "0.05", "60",    "120",   "SF"),
+        ("udp", "dns",  "-",    "55",    "-",     "SF"),
+        ("udp", "dns",  "0.03", "70",    "110",   "SF"),
+    ];
+
+    rows.iter()
+        .map(|(p, s, d, ob, rb, cs)| {
+            FlowFeatures::from_tsv_row(&row(p, s, d, ob, rb, cs))
+                .expect("synthetic row should parse")
+        }).collect()
+}
+
+#[test]
+fn fit_then_predict_reutrns_id_in_range() {
+    let batch = synthetic_batch();
+    let k = 3;
+
+    let state = FlowStateBuilder::new(k).fit(&batch);
+    // redundant smoke test
+    assert_eq!(state.k(), k);
+    
+    for f in &batch {
+        let id = state.predict(f);
+        assert!((id as usize) < k, "id:{} out of range for k: {}", id, k);
     }
 }
 
 #[test]
-fn intern_then_resolve_reutrns_same_key() {
-    let mut state = FlowState::new();
-    let key = make_key("tcp", "http", "SF");
+fn reslove_returns_FEATURE_DIM() {
+    let batch = synthetic_batch();
 
-    let id = state.intern(key.clone());
-    let resolved = state.resolve(id).expect("id didnt resolve");
+    let state = FlowStateBuilder::new(3).fit(&batch);
 
-    assert_eq!(*resolved, key);
+    for id in 0..state.k() as u64 {
+        let centroid = state.resolve(id);
+        assert_eq!(centroid.len(), FEATURE_DIM);
+    }
 }
 
 #[test]
-fn intern_same_key_twice_returns_same_id() {
-    let mut state = FlowState::new();
-    let key = make_key("tcp", "http", "SF");
+fn same_flow_predicts_same_cluster() {
+    let batch = synthetic_batch();
+    let state = FlowStateBuilder::new(3).fit(&batch);
 
-    let id_1 = state.intern(key.clone());
-    let id_2 = state.intern(key);
-
-    assert_eq!(id_1, id_2);
-    assert_eq!(state.len(), 1);
+    let f = &batch[0];
+    let id_a = state.predict(f);
+    let id_b = state.predict(f);
+    assert_eq!(id_a, id_b);
 }
 
-#[test]
-fn intern_on_distinct_key_distinct_id() {
-    let mut state = FlowState::new();
-    let key_1 = make_key("tcp", "http", "SF");
-    let key_2 = make_key("udp", "https", "S0");
-    let key_3 = make_key("udp", "ssl", "S0");
-
-    let id_1 = state.intern(key_1.clone());
-    let id_2 = state.intern(key_2.clone());
-    let id_3 = state.intern(key_3.clone());
-
-    assert_ne!(id_1, id_2);
-    assert_ne!(id_3, id_2);
-    assert_ne!(id_3, id_1);
-    assert_eq!(state.len(), 3);
-}
-
-#[test]
-fn ids_are_sequential() {
-    // Since markov-rs depends on sequential states
-    // ids should be dense and sequential
-    let mut state = FlowState::new();
-    let key_1 = make_key("tcp", "http", "SF");
-    let key_2 = make_key("udp", "https", "S0");
-    let key_3 = make_key("udp", "ssl", "S0");
-
-    let id_1 = state.intern(key_1.clone());
-    let id_2 = state.intern(key_2.clone());
-    let id_3 = state.intern(key_3.clone());
-
-    assert_eq!(id_1, 0);
-    assert_eq!(id_2, 1);
-    assert_eq!(id_3, 2);
-}

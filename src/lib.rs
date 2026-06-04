@@ -1,7 +1,9 @@
-mod intern;
-mod key;
+mod features;
+mod scaler;
+mod cluster;
+mod state;
 
-pub use key::FlowKey;
-pub use intern::FlowState;
 
+pub use features::{FlowFeatures, FEATURE_DIM};
+pub use state::{FlowState, FlowStateBuilder};
 
