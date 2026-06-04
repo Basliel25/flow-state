@@ -33,7 +33,19 @@ fn synthetic_batch() -> Vec<FlowFeatures> {
 }
 
 #[test]
-fn fit_then_predict_reutrns_id_in_range() {}
+fn fit_then_predict_reutrns_id_in_range() {
+    let batch = synthetic_batch();
+    let k = 3;
+
+    let state = FlowStateBuilder::new(k).fit(&batch);
+    // redundant smoke test
+    assert_eq!(state.k(), k);
+    
+    for f in &batch {
+        let id = state.predict(f);
+        assert!((id as usize) < k, "id:{} out of range for k: {}", id, k);
+    }
+}
 
 #[test]
 fn reslove_returns_41_dim_centroid() {}
