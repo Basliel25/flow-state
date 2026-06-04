@@ -87,7 +87,7 @@ fn to_vector(parsed: &ParsedRow) -> Array1<f64> {
 }
 
 #[cfg(test)]
-mod test{
+mod tests {
     use super::*;
 
     const CONT: std::ops::Range<usize> = 0..3;
@@ -95,7 +95,12 @@ mod test{
     const SERVICE: std::ops::Range<usize> = 8..34;
     const CONN_STATE: std::ops::Range<usize> = 34..41;
 
-    #[test]
-
-
+    fn row(proto: &str
+        , service: &str
+        , dur: &str
+        , ob: &str
+        , rb: &str
+        , cs: &str) -> String {
+        format!("1.0\tCxxxx\t1.2.3.4\t1111\t5.6.7.8\t80\t{proto}\t{service}\t{dur}\t{ob}\t{rb}\t{cs}")
+    }
 }
