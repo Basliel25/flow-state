@@ -82,4 +82,41 @@ impl Scaler {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ndarray::Array1;
+    
+    /// Build a flow features vector from given parameters
+    fn ff(dur: f64, ob: f64, rb: f64) -> FlowFeatures {
+        let mut v = Array1::zeros(FEATURE_DIM);
+        v[0] = dur;
+        v[1] = ob;
+        v[2] = rb;
+        v[3]  = 1.0; // proto
+        v[8]  = 1.0; // service
+        v[34] = 1.0; // conn_state 
+        FlowFeatures { vector: v }
+    }
+
+    #[test]
+    fn fit_ignores_nan_crosscheck_handcomputed_log_mean() {
+        // mean(log1p) = (0 + 1) / 2 = 0.5
+        let batch = vec![
+            ff(0.0,0.0, 0.0),
+            ff(std::f64::consts::E - 1.0, 0.0, 0.0),
+            ff(f64::NAN,0.0, 0.0),
+        ];
+
+        let s = Scaler::fit(&batch);
+
+        assert!((s.means[0] - 0.5).abs() < 1e-10,
+                "expected mean(log1p) = 0.5, got {}", s.means[0]);
+        assert!((s.std[0] - 0.5).abs() < 1e-10,
+                "expected std = 0.5, got {}", s.std[0]);
+    }
+
+
+}
+
 
