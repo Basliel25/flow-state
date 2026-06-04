@@ -4,11 +4,14 @@
 ///
 ///! Outputs a u64 vecor with dim (0,K]
 
-use ndarray::Array1;
+use ndarray::{Array1, Array2};
 use linfa::DatasetBase;
 use linfa::traits::{Fit, Predict};
 use linfa_clustering::KMeans;
 use linfa_nn::distance::L2Dist;
+
+use rand::SeedableRng;
+use rand::rngs::StdRng;
 
 #[derive(Debug, Clone)]
 pub struct ClusterModel {
@@ -20,6 +23,23 @@ pub struct ClusterModel {
 impl ClusterModel {
     /// Fit k-means on a batch of scaled vectors
     pub fn fit(batch: &[Array1<f64>], k: usize) -> Self {
+        // K clustering requires k samples to seat across centriods
+        assert!(
+            batch.len() >= k,
+            "Batch has {} samples needs >= {}",
+            batch.len(),
+            k
+        );
+
+        // Linfa clustering expects a 2d array with shape (n_samples, n_features)
+        let n = batch.len();
+        let flat: Vec<f64> = batch
+            .iter()
+            .flat_map(|row| row.iter().copied())
+            .collect();
+
+
+
         todo!()
     }
 
@@ -33,3 +53,5 @@ impl ClusterModel {
 
     pub fn k(&self) ->usize {self.k}
 }
+
+
