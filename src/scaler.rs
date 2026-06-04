@@ -116,6 +116,24 @@ mod tests {
                 "expected std = 0.5, got {}", s.std[0]);
     }
 
+    #[test]
+    fn transform_z_scores_continous_and_zero_for_nan() {
+        let batch = vec![
+            ff(0.0,0.0, 0.0),
+            ff(std::f64::consts::E - 1.0, 0.0, 0.0),
+            ff(f64::NAN,0.0, 0.0),
+        ];
+
+        let s = Scaler::fit(&batch);
+
+        let out = s.transform(&ff(std::f64::consts::E - 1.0, 0.0, 0.0));
+        assert!((out[0] - 1.0).abs() < 1e-10, "got {}", out[0]);
+
+        // NaN input imputes to 0.0 
+        let out_nan = s.transform(&ff(f64::NAN, 0.0, 0.0));
+        assert_eq!(out_nan[0], 0.0);
+    }
+
 
 }
 
