@@ -1,6 +1,7 @@
 mod intern;
 mod key;
 mod features;
+mod scaler;
 
 pub use key::FlowKey;
 pub use intern::FlowState;
