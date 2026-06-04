@@ -85,3 +85,17 @@ fn to_vector(parsed: &ParsedRow) -> Array1<f64> {
 
     feature_vector
 }
+
+#[cfg(test)]
+mod test{
+    use super::*;
+
+    const CONT: std::ops::Range<usize> = 0..3;
+    const PROTO: std::ops::Range<usize> = 3..8;
+    const SERVICE: std::ops::Range<usize> = 8..34;
+    const CONN_STATE: std::ops::Range<usize> = 34..41;
+
+    #[test]
+
+
+}
