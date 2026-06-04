@@ -50,6 +50,7 @@ fn main() {
     // Print sorted with %
     let total = batch.len() as f64;
     let mut rows: Vec<(u64, usize)> = hist.into_iter().collect();
+    rows.sort_by(|a, b| b.1.cmp(&a.1));
 
     eprintln!("\ncluster histogram (id | count | percentage):",);
     for (id, count) in rows {
