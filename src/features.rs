@@ -122,4 +122,11 @@ mod tests {
         let v = g.vector.as_slice().unwrap();
         assert!(v[CONT].iter().all(|x| x.is_nan()));
     }
+
+    #[test]
+    fn compound_service_is_atomic() {
+        let f = FlowFeatures::from_tsv_row(&row("tcp", "gssapi,ntlm,smb", "0.5", "100", "200", "SF")).unwrap();
+        let v = f.vector.as_slice().unwrap();
+        assert_eq!(v[SERVICE].iter().sum::<f64>(), 1.0)
+    }
 }
