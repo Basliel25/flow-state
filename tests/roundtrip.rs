@@ -60,5 +60,13 @@ fn reslove_returns_FEATURE_DIM() {
 }
 
 #[test]
-fn same_flow_predicts_same_cluster() {}
+fn same_flow_predicts_same_cluster() {
+    let batch = synthetic_batch();
+    let state = FlowStateBuilder::new(3).fit(&batch);
+
+    let f = &batch[0];
+    let id_a = state.predict(f);
+    let id_b = state.predict(f);
+    assert_eq!(id_a, id_b);
+}
 
