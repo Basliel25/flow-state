@@ -69,7 +69,10 @@ impl ClusterModel {
 
     /// The resolve module, fetches a cluster and returns a human
     /// readable state explanation.
-    pub fn resolve(&self , id: u64) -> Array1<f64> {todo!()}
+    pub fn resolve(&self, id: u64) -> Array1<f64> {
+        assert!((id as usize) < self.k, "cluster id {} out of range (k={})", id, self.k);
+        self.inner.centroids().row(id as usize).to_owned()
+    }
 
     pub fn k(&self) ->usize {self.k}
 }
