@@ -5,7 +5,7 @@
 ///! Fitting: consumes a batch and freezes per columns params mean and std diviation
 ///! Transformation: Applies and scales the frozen params and scales
 
-use ndarray::Array1;
+use ndarray::{Array1, s};
 use crate::features::{FlowFeatures, FEATURE_DIM};
 
 
@@ -66,7 +66,20 @@ impl Scaler {
 }
 
 
-    pub fn transform(&self, f: &FlowFeatures) -> Array1<f64> {todo!()}
+    pub fn transform(&self, f: &FlowFeatures) -> Array1<f64> {
+        let mut scaled: Array1<f64> = Array1::zeros(FEATURE_DIM);
+
+        for (i, &col) in CONT_DIMS.iter().enumerate() {
+            let x = f.vector[col];
+            if x.is_nan() {continue;}
+
+            scaled[col] = (x.ln_1p() - self.means[i]) / self.std[i];
+        }
+
+        scaled.slice_mut(s![3..])
+            .assign(&f.vector.slice(s![3..]));
+        scaled
+    }
 }
 
 
