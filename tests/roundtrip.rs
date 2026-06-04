@@ -1,7 +1,7 @@
 ///! complete API integration test
 ///! Test flowstate pipe from intern <--> resolve
 
-use flow_state::{FlowState, FlowKey};
+use flow_state::{FlowState, FlowBuilder};
 
 /// Create a key from the values
 fn make_key(proto: &str, service: &str, conn_state: &str) -> FlowKey {
