@@ -1,5 +1,4 @@
 # Flow state 
-# flow-state
 
 [![Crates.io](https://img.shields.io/crates/v/conn-flow-state.svg)](https://crates.io/crates/conn-flow-state)
 [![License](https://img.shields.io/crates/l/flow-state.svg)](https://github.com/Basliel25/flow-state#license)
