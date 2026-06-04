@@ -25,6 +25,11 @@ fn synthetic_batch() -> Vec<FlowFeatures> {
         ("udp", "dns",  "0.03", "70",    "110",   "SF"),
     ];
 
+    rows.iter()
+        .map(|(p, s, d, ob, rb, cs)| {
+            FlowFeatures::from_tsv_row(&row(p, s, d, ob, rb, cs))
+        })
+
 
 
 }
