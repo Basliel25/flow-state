@@ -9,7 +9,25 @@ fn row(proto: &str, service: &str, dur: &str, ob: &str, rb: &str, cs: &str) -> S
     format!("1.0\tCxxxx\t1.2.3.4\t1111\t5.6.7.8\t80\t{proto}\t{service}\t{dur}\t{ob}\t{rb}\t{cs}")
 }
 
-fn synthetic_batch() -> Vec<FlowFeatures> {}
+fn synthetic_batch() -> Vec<FlowFeatures> {
+    let rows = [
+        // short tcp and http combo
+        ("tcp", "http", "0.1",  "100",   "200",   "SF"),
+        ("tcp", "http", "0.15", "120",   "180",   "SF"),
+        ("tcp", "http", "0.08", "90",    "210",   "SF"),
+        // long tcp and ssl combo
+        ("tcp", "ssl",  "30.0", "50000", "80000", "SF"),
+        ("tcp", "ssl",  "45.0", "60000", "90000", "SF"),
+        ("tcp", "ssl",  "28.0", "48000", "85000", "SF"),
+        // udp and dns with intential missing entries
+        ("udp", "dns",  "0.05", "60",    "120",   "SF"),
+        ("udp", "dns",  "-",    "55",    "-",     "SF"),
+        ("udp", "dns",  "0.03", "70",    "110",   "SF"),
+    ];
+
+
+
+}
 
 #[test]
 fn fit_then_predict_reutrns_id_in_range() {}
