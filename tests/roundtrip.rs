@@ -28,10 +28,8 @@ fn synthetic_batch() -> Vec<FlowFeatures> {
     rows.iter()
         .map(|(p, s, d, ob, rb, cs)| {
             FlowFeatures::from_tsv_row(&row(p, s, d, ob, rb, cs))
-        })
-
-
-
+                .expect("synthetic row should parse")
+        }).collect()
 }
 
 #[test]
