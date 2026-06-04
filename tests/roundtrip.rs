@@ -48,7 +48,16 @@ fn fit_then_predict_reutrns_id_in_range() {
 }
 
 #[test]
-fn reslove_returns_41_dim_centroid() {}
+fn reslove_returns_FEATURE_DIM() {
+    let batch = synthetic_batch();
+
+    let state = FlowStateBuilder::new(3).fit(&batch);
+
+    for id in 0..state.k() as u64 {
+        let centroid = state.resolve(id);
+        assert_eq!(centroid.len(), FEATURE_DIM);
+    }
+}
 
 #[test]
 fn same_flow_predicts_same_cluster() {}
