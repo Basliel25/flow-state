@@ -47,6 +47,13 @@ fn main() {
         *hist.entry(id).or_insert(0) += 1;
     }
 
+    // Print sorted with %
+    let total = batch.len() as f64;
+    let mut rows: Vec<(u64, usize)> = hist.into_iter().collect();
 
+    eprintln!("\ncluster histogram (id | count | percentage):",);
+    for (id, count) in rows {
+        eprintln!(" {:3} | {:6} | {:5.1}%", id, count, 100.0 * count as f64 / total);
+    }
 }
 
