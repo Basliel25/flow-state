@@ -33,5 +33,20 @@ fn main() {
         eprintln!("Insufficent data");
         process::exit(2);
     }
+
+    // Fitting
+    let state = FlowStateBuilder::new(k).fit(&batch);
+    eprintln!("Fitted {} clusters", state.k());
+
+    // Predicting
+    // Construct a histogram with clusters
+    let mut hist: BTreeMap<u64, usize> = BTreeMap::new();
+
+    for f in &batch {
+        let id = state.predict(f);
+        *hist.entry(id).or_insert(0) += 1;
+    }
+
+
 }
 
